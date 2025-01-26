@@ -1,6 +1,12 @@
-﻿using Domain.Entities;
+﻿using Application.Data;
+using Application.Products.Get;
+using Application.Products.GetById;
+using Domain.Entities;
+using Domain.Products;
 using Infrastructure.DataProviders.WebServices.Services;
+using MediatR;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -11,12 +17,16 @@ public class JobD : BackgroundService
     private readonly ILogger<JobD> _logger;
     private readonly IConfiguration _configuration;
     private readonly PokemonService _pokemonService;
+    private readonly IMediator _mediator;
+    private readonly IServiceScopeFactory _serviceScopeFactory;  // Adicionar para criar escopos
 
-    public JobD(ILogger<JobD> logger, IConfiguration configuration, PokemonService pokemonService)
+    public JobD(ILogger<JobD> logger, IConfiguration configuration, PokemonService pokemonService, IMediator mediator, IServiceScopeFactory serviceScopeFactory)
     {
         _logger = logger;
         _configuration = configuration;
         _pokemonService = pokemonService;
+        _mediator = mediator;
+        _serviceScopeFactory = serviceScopeFactory;  // Injeção do IServiceScopeFactory
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -136,6 +146,34 @@ public class JobD : BackgroundService
         if (abilitiesChanged)
         {
             _logger.LogInformation("Habilidades foram alteradas entre os Pokémon. Realizando ação de delay.");
+
+            // Aqui é onde a chamada ao MediatR é feita, garantindo que o DbContext seja resolvido
+            using (var scope = _serviceScopeFactory.CreateScope())  // Criando um escopo
+            {
+                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+                // Executa a consulta GetProductsQuery via MediatR
+
+                Guid id = Guid.Parse("29ab3332-82ec-4b15-ad0d-3d502585f629");
+                var query = new GetProductQuery(new ProductId(id)); // ou qualquer filtro desejado
+                var products = await mediator.Send(query);
+
+                //if (products.Any())
+                //{
+                //    _logger.LogInformation("Produtos encontrados: {ProductCount}", products.Count());
+                //    // Aqui você pode aplicar a lógica de manipulação de dados que precisar
+                //}
+                //else
+                //{
+                //    _logger.LogWarning("Nenhum produto encontrado.");
+                //}
+
+                _logger.LogInformation("Produtos encontrados: {ProductCount}", products);
+
+                var teste = "tesste";
+                // Aqui você pode utilizar o dbContext para fazer mais operações se necessário
+            }
+
             await Task.Delay(TimeSpan.FromSeconds(5)); // Delay caso haja alteração
         }
         else

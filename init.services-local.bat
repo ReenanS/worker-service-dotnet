@@ -1,3 +1,3 @@
-echo 'Startando todos os containers (SQL Server)'
+echo 'Startando todos os containers'
 
 docker-compose up -d

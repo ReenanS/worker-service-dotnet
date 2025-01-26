@@ -1,29 +1,14 @@
 version: '2'
 services:
-  # Serviço para executar o SQL Server
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    hostname: sqlserver
-    container_name: sqlserver
-    ports:
-      - 1433:1433  # Mapeamento da porta do host para a porta do SQL Server    
+  # Serviço para executar o postgresql
+  consorcio.db:
+    image: postgres:latest
+    container_name: consorcio-db
     environment:
-      MSSQL_SA_PASSWORD: password@123456  # user and passowrd
-      ACCEPT_EULA: Y
-      TZ: America/Sao_Paulo
-      MSSQL_PID: Developer
-      MSSQL_AGENT_ENABLED: "True" # Habilita cdc
-      MSSQL_TCP_PORT: 1433
-      MSSQL_LCID: 1046
-      MSSQL_COLLATION: Latin1_General_CI_AS
-
-  # Serviço para executar o script SQL de configuração do CDC
-  sqltools:
-    image: mcr.microsoft.com/mssql-tools
-    hostname: sqltools
-    container_name: sqltools
-    depends_on:
-      - sqlserver
+      - POSTGRES_DB=consorcio
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     volumes:
-      - "./scripts/ConsorcioDB:/tmp"
-    command: /bin/bash ./tmp/ConsorcioDB-00-init.sh
+      - ./.containers/db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
