@@ -4,18 +4,18 @@ using Quartz;
 namespace Infrastructure;
 
 [DisallowConcurrentExecution]
-public class LoggingBackgroundJob : IJob
+public class JobA : IJob
 {
-    private readonly ILogger<LoggingBackgroundJob> _logger;
+    private readonly ILogger<JobA> _logger;
 
-    public LoggingBackgroundJob(ILogger<LoggingBackgroundJob> logger)
+    public JobA(ILogger<JobA> logger)
     {
         _logger = logger;
     }
 
     public Task Execute(IJobExecutionContext context)
     {
-        _logger.LogInformation("Job Tio Phon iniciado às {time}", DateTime.Now);
+        _logger.LogInformation("Job A iniciado às {time}", DateTime.Now);
 
         return Task.CompletedTask;
     }

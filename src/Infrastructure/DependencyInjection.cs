@@ -14,6 +14,6 @@ public static class DependencyInjection
             options.WaitForJobsToComplete = true;
         });
 
-        services.ConfigureOptions<LoggingBackgroundJobSetup>();
+        services.ConfigureOptions<QuartzJobSetup>();
     }
 }
