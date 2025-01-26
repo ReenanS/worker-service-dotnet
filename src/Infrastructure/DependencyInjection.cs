@@ -27,7 +27,7 @@ public static class DependencyInjection
 
         // Configuração do Refit para consumir a PokéAPI
         services.AddRefitClient<IPokeApi>()
-                .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://pokeapi.co/api/v2/"));
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://pokeapi.co/api/v2"));
 
         // Registra o serviço PokemonService
         services.AddSingleton<PokemonService>();
