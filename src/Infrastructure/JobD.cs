@@ -16,15 +16,13 @@ namespace Infrastructure
         private readonly ILogger<JobD> _logger;
         private readonly IConfiguration _configuration;
         private readonly PokemonService _pokemonService;
-        private readonly IMediator _mediator;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public JobD(ILogger<JobD> logger, IConfiguration configuration, PokemonService pokemonService, IMediator mediator, IServiceScopeFactory serviceScopeFactory)
+        public JobD(ILogger<JobD> logger, IConfiguration configuration, PokemonService pokemonService, IServiceScopeFactory serviceScopeFactory)
         {
             _logger = logger;
             _configuration = configuration;
             _pokemonService = pokemonService;
-            _mediator = mediator;
             _serviceScopeFactory = serviceScopeFactory;
         }
 
@@ -116,6 +114,9 @@ namespace Infrastructure
                 Guid id = Guid.Parse("29ab3332-82ec-4b15-ad0d-3d502585f629");
                 var query = new GetProductQuery(new ProductId(id)); // A consulta pode ter parâmetros específicos
                 var products = await mediator.Send(query, stoppingToken);
+
+                _logger.LogInformation("Consulta de produto com sucesso às {time}", DateTime.Now);
+
                 return products;
             }
         }
@@ -171,7 +172,7 @@ namespace Infrastructure
 
         private async Task InsertProductAsync()
         {
-            _logger.LogInformation("Habilidades foram alteradas. Inserindo novo produto.");
+            _logger.LogInformation("Habilidades foram alteradas. Inserindo novo produto às {time}", DateTime.Now);
 
             // Criar o comando para inserir o novo produto
             var command = new CreateProductCommand("Novo Produto", "SKU12345", "BRL", (decimal)99.99);
@@ -184,7 +185,7 @@ namespace Infrastructure
                 // Envia o comando via MediatR para inserir o novo produto
                 await mediator.Send(command);
 
-                _logger.LogInformation("Novo produto inserido com sucesso.");
+                _logger.LogInformation("Novo produto inserido com sucesso às {time}", DateTime.Now);
             }
         }
     }

@@ -11,7 +11,6 @@ builder.ConfigureServices((context, services) =>
 {
     // Registra a camada de infraestrutura, que inclui o Quartz e outros serviços
     services.AddInfrastructure();
-
     services.AddPersistence(context.Configuration);
     services.AddApplication();
 
