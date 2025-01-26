@@ -1,5 +1,4 @@
 using Infrastructure;
-using Worker;
 
 var builder = Host.CreateDefaultBuilder(args);
 
@@ -9,9 +8,13 @@ builder.ConfigureServices((context, services) =>
     services.AddInfrastructure();
 
     // Adiciona o Worker Service como um serviço de background
-    services.AddHostedService<BackgroundWorker>();
+    //services.AddHostedService<BackgroundWorker>();
+
+    // Registra o JobDBackgroundService
+    services.AddHostedService<JobD>();
+
 });
 
 var app = builder.Build();
 
-await app.RunAsync();
+app.Run();

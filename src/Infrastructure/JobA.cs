@@ -15,7 +15,7 @@ public class JobA : IJob
 
     public Task Execute(IJobExecutionContext context)
     {
-        _logger.LogInformation("Job A iniciado às {time}", DateTime.Now);
+        _logger.LogInformation("Job A iniciado via Quartz às {time}", DateTime.Now);
 
         return Task.CompletedTask;
     }
