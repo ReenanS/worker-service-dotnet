@@ -2,32 +2,30 @@
 using Infrastructure.DataProviders.WebServices.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace Infrastructure.DataProviders.WebServices.Services
+namespace Infrastructure.DataProviders.WebServices.Services;
+public class PokemonService
 {
-    public class PokemonService
+    private readonly IPokeApi _pokeApi;
+    private readonly ILogger<PokemonService> _logger;
+
+    public PokemonService(IPokeApi pokeApi, ILogger<PokemonService> logger)
     {
-        private readonly IPokeApi _pokeApi;
-        private readonly ILogger<PokemonService> _logger;
+        _pokeApi = pokeApi;
+        _logger = logger;
+    }
 
-        public PokemonService(IPokeApi pokeApi, ILogger<PokemonService> logger)
+    public async Task<PokemonResponse> GetPokemonInfoAsync(string name)
+    {
+        try
         {
-            _pokeApi = pokeApi;
-            _logger = logger;
+            var response = await _pokeApi.GetPokemonByNameAsync(name);
+            _logger.LogInformation("Successfully retrieved data for {PokemonName}", name);
+            return response;
         }
-
-        public async Task<PokemonResponse> GetPokemonInfoAsync(string name)
+        catch (Exception ex)
         {
-            try
-            {
-                var response = await _pokeApi.GetPokemonByNameAsync(name);
-                _logger.LogInformation("Successfully retrieved data for {PokemonName}", name);
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving data for {PokemonName}", name);
-                throw;
-            }
+            _logger.LogError(ex, "Error retrieving data for {PokemonName}", name);
+            throw;
         }
     }
 }
